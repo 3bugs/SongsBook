@@ -16,6 +16,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import java.util.ArrayList;
 import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity
@@ -23,6 +24,7 @@ public class MainActivity extends AppCompatActivity
 
     private DatabaseHelper mHelper;
     private SQLiteDatabase mDb;
+    private ArrayList<Song> mSongList = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,6 +68,9 @@ public class MainActivity extends AppCompatActivity
             );
 
             Log.v("MainActivity", msg);
+
+            Song song = new Song(id, title, artist, lyric);
+            mSongList.add(song);
         }
     }
 
