@@ -1,30 +1,23 @@
 package com.example.songsbook;
 
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
-import java.util.ArrayList;
-import java.util.Locale;
-
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    private DatabaseHelper mHelper;
-    private SQLiteDatabase mDb;
-    private ArrayList<Song> mSongList = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,27 +44,8 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        mHelper = new DatabaseHelper(this);
-        mDb = mHelper.getWritableDatabase();
-
-        Cursor cursor = mDb.query(DatabaseHelper.TABLE_NAME, null, null, null, null, null, null);
-        while (cursor.moveToNext()) {
-            int id = cursor.getInt(cursor.getColumnIndex(DatabaseHelper.COL_ID));
-            String title = cursor.getString(cursor.getColumnIndex(DatabaseHelper.COL_TITLE));
-            String artist = cursor.getString(cursor.getColumnIndex(DatabaseHelper.COL_ARTIST));
-            String lyric = cursor.getString(cursor.getColumnIndex(DatabaseHelper.COL_LYRIC));
-
-            String msg = String.format(
-                    Locale.getDefault(),
-                    "id: %d, title: %s, artist: %s, lyric: %s",
-                    id, title, artist, lyric
-            );
-
-            Log.v("MainActivity", msg);
-
-            Song song = new Song(id, title, artist, lyric);
-            mSongList.add(song);
-        }
+        navigationView.getMenu().performIdentifierAction(R.id.nav_song_list, 0);
+        navigationView.setCheckedItem(R.id.nav_song_list);
     }
 
     @Override
@@ -112,9 +86,21 @@ public class MainActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_camera) {
-            // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
+        if (id == R.id.nav_song_list) {
+            SongFragment fragment = new SongFragment();
+
+            FragmentManager fm = getSupportFragmentManager();
+            FragmentTransaction transaction = fm.beginTransaction();
+            transaction.replace(R.id.fragment_container, fragment);
+            transaction.commit();
+
+        } else if (id == R.id.nav_chord) {
+            ChordFragment fragment = new ChordFragment();
+
+            FragmentManager fm = getSupportFragmentManager();
+            FragmentTransaction transaction = fm.beginTransaction();
+            transaction.replace(R.id.fragment_container, fragment);
+            transaction.commit();
 
         } else if (id == R.id.nav_slideshow) {
 

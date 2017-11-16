@@ -14,17 +14,26 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "songsbook.db";
     private static final int DATABSE_VERSION = 1;
 
-    public static final String TABLE_NAME = "songs";
+    public static final String TABLE_NAME_SONG = "songs";
     public static final String COL_ID = "_id";
     public static final String COL_TITLE = "title";
     public static final String COL_ARTIST = "artist";
     public static final String COL_LYRIC = "lyric";
 
-    private static final String SQL_CREATE_TABLE_SONGS = "CREATE TABLE " + TABLE_NAME + "("
+    public static final String TABLE_NAME_CHORD = "chords";
+    public static final String COL_NAME = "name";
+    public static final String COL_PICTURE = "picture";
+
+    private static final String SQL_CREATE_TABLE_SONGS = "CREATE TABLE " + TABLE_NAME_SONG + "("
             + COL_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
             + COL_TITLE + " TEXT,"
             + COL_ARTIST + " TEXT,"
             + COL_LYRIC + " TEXT)";
+
+    private static final String SQL_CREATE_TABLE_CHORDS = "CREATE TABLE " + TABLE_NAME_CHORD + "("
+            + COL_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+            + COL_NAME + " TEXT,"
+            + COL_PICTURE + " TEXT)";
 
     public DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABSE_VERSION);
@@ -33,6 +42,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
         sqLiteDatabase.execSQL(SQL_CREATE_TABLE_SONGS);
+        sqLiteDatabase.execSQL(SQL_CREATE_TABLE_CHORDS);
         insertInitialData(sqLiteDatabase);
     }
 
@@ -41,19 +51,34 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         cv.put(COL_TITLE, "ทําได้เพียง");
         cv.put(COL_ARTIST, "25Hours");
         cv.put(COL_LYRIC, "song0001.png");
-        db.insert(TABLE_NAME, null, cv);
+        db.insert(TABLE_NAME_SONG, null, cv);
 
         cv = new ContentValues();
         cv.put(COL_TITLE, "อย่าบอก");
         cv.put(COL_ARTIST, "Atom ชนกันต์");
         cv.put(COL_LYRIC, "song0002.png");
-        db.insert(TABLE_NAME, null, cv);
+        db.insert(TABLE_NAME_SONG, null, cv);
 
         cv = new ContentValues();
         cv.put(COL_TITLE, "เฉยเมย");
         cv.put(COL_ARTIST, "YOUNGOHM");
         cv.put(COL_LYRIC, "song0003.png");
-        db.insert(TABLE_NAME, null, cv);
+        db.insert(TABLE_NAME_SONG, null, cv);
+
+        cv = new ContentValues();
+        cv.put(COL_NAME, "C");
+        cv.put(COL_PICTURE, "chord_c.png");
+        db.insert(TABLE_NAME_CHORD, null, cv);
+
+        cv = new ContentValues();
+        cv.put(COL_NAME, "D");
+        cv.put(COL_PICTURE, "chord_d.png");
+        db.insert(TABLE_NAME_CHORD, null, cv);
+
+        cv = new ContentValues();
+        cv.put(COL_NAME, "Am");
+        cv.put(COL_PICTURE, "chord_am.png");
+        db.insert(TABLE_NAME_CHORD, null, cv);
     }
 
     @Override
