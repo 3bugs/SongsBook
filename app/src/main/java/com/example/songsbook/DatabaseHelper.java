@@ -19,6 +19,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String COL_TITLE = "title";
     public static final String COL_ARTIST = "artist";
     public static final String COL_LYRIC = "lyric";
+    public static final String COL_IS_FAVORITE = "is_favorite";
 
     public static final String TABLE_NAME_CHORD = "chords";
     public static final String COL_NAME = "name";
@@ -28,7 +29,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             + COL_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
             + COL_TITLE + " TEXT,"
             + COL_ARTIST + " TEXT,"
-            + COL_LYRIC + " TEXT)";
+            + COL_LYRIC + " TEXT,"
+            + COL_IS_FAVORITE + " INTEGER)";
 
     private static final String SQL_CREATE_TABLE_CHORDS = "CREATE TABLE " + TABLE_NAME_CHORD + "("
             + COL_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
@@ -48,21 +50,24 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     private void insertInitialData(SQLiteDatabase db) {
         ContentValues cv = new ContentValues();
-        cv.put(COL_TITLE, "ทําได้เพียง");
+        cv.put(COL_TITLE, "ทำได้เพียง");
         cv.put(COL_ARTIST, "25Hours");
         cv.put(COL_LYRIC, "song0001.png");
+        cv.put(COL_IS_FAVORITE, 0);
         db.insert(TABLE_NAME_SONG, null, cv);
 
         cv = new ContentValues();
         cv.put(COL_TITLE, "อย่าบอก");
         cv.put(COL_ARTIST, "Atom ชนกันต์");
         cv.put(COL_LYRIC, "song0002.png");
+        cv.put(COL_IS_FAVORITE, 1);
         db.insert(TABLE_NAME_SONG, null, cv);
 
         cv = new ContentValues();
         cv.put(COL_TITLE, "เฉยเมย");
         cv.put(COL_ARTIST, "YOUNGOHM");
         cv.put(COL_LYRIC, "song0003.png");
+        cv.put(COL_IS_FAVORITE, 0);
         db.insert(TABLE_NAME_SONG, null, cv);
 
         cv = new ContentValues();
@@ -83,6 +88,5 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
-
     }
 }
