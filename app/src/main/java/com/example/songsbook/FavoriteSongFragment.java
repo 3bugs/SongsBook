@@ -24,23 +24,22 @@ import java.util.Locale;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class ChordFragment extends Fragment {
+public class FavoriteSongFragment extends Fragment {
 
     private DatabaseHelper mHelper;
     private SQLiteDatabase mDb;
-    private ArrayList<Chord> mChordList = new ArrayList<>();
-    private ListView mChordsListView;
+    private ArrayList<Song> mFavoriteSongList = new ArrayList<>();
+    private ListView mFavoriteSongsListView;
 
-    public ChordFragment() {
+    public FavoriteSongFragment() {
         // Required empty public constructor
     }
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_chord, container, false);
+        return inflater.inflate(R.layout.fragment_favorite_song, container, false);
     }
 
     @Override
@@ -48,33 +47,43 @@ public class ChordFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
-        actionBar.setTitle("Chords");
+        actionBar.setTitle("Favorite Songs");
 
         loadDataFromDb();
         bindDataToListView();
     }
 
     private void bindDataToListView() {
-        mChordsListView = (ListView) getView().findViewById(R.id.chords_list_view);
+        mFavoriteSongsListView = (ListView) getView().findViewById(R.id.favorite_songs_list_view);
 
-        ArrayAdapter adapter = new ArrayAdapter<Chord>(
+        ArrayAdapter adapter = new ArrayAdapter<Song>(
                 getActivity(),
                 android.R.layout.simple_list_item_1,
-                mChordList
+                mFavoriteSongList
         );
-        mChordsListView.setAdapter(adapter);
 
-        mChordsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+/*
+        SongListAdapter adapter = new SongListAdapter(
+                getActivity(),
+                R.layout.item_song,
+                mFavoriteSongList
+        );
+*/
+
+        mFavoriteSongsListView.setAdapter(adapter);
+
+        mFavoriteSongsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Chord chord = mChordList.get(i);
-                String name = chord.name;
-                String picture = chord.picture;
+                Song song = mFavoriteSongList.get(i);
+                String title = song.title;
+                String artist = song.artist;
+                String lyrics = song.lyric;
 
                 Intent intent = new Intent(getActivity(), SongDetailsActivity.class);
-                intent.putExtra("title", "คอร์ด " + name);
-                intent.putExtra("artist", "");
-                intent.putExtra("lyric", picture);
+                intent.putExtra("title", title);
+                intent.putExtra("artist", artist);
+                intent.putExtra("lyric", lyrics);
                 startActivity(intent);
             }
         });
@@ -84,22 +93,32 @@ public class ChordFragment extends Fragment {
         mHelper = new DatabaseHelper(getActivity());
         mDb = mHelper.getWritableDatabase();
 
-        Cursor cursor = mDb.query(DatabaseHelper.TABLE_NAME_CHORD, null, null, null, null, null, null);
+        Cursor cursor = mDb.query(
+                DatabaseHelper.TABLE_NAME_SONG,
+                null,
+                DatabaseHelper.COL_IS_FAVORITE + "=?",
+                new String[]{String.valueOf(1)},
+                null,
+                null,
+                null
+        );
         while (cursor.moveToNext()) {
             int id = cursor.getInt(cursor.getColumnIndex(DatabaseHelper.COL_ID));
-            String name = cursor.getString(cursor.getColumnIndex(DatabaseHelper.COL_NAME));
-            String picture = cursor.getString(cursor.getColumnIndex(DatabaseHelper.COL_PICTURE));
+            String title = cursor.getString(cursor.getColumnIndex(DatabaseHelper.COL_TITLE));
+            String artist = cursor.getString(cursor.getColumnIndex(DatabaseHelper.COL_ARTIST));
+            String lyric = cursor.getString(cursor.getColumnIndex(DatabaseHelper.COL_LYRIC));
+            int isFavorite = cursor.getInt(cursor.getColumnIndex(DatabaseHelper.COL_IS_FAVORITE));
 
             String msg = String.format(
                     Locale.getDefault(),
-                    "id: %d, name: %s, picture: %s",
-                    id, name, picture
+                    "id: %d, title: %s, artist: %s, lyric: %s",
+                    id, title, artist, lyric
             );
 
             Log.v("MainActivity", msg);
 
-            Chord chord = new Chord(id, name, picture);
-            mChordList.add(chord);
+            Song song = new Song(id, title, artist, lyric, isFavorite);
+            mFavoriteSongList.add(song);
         }
     }
 }

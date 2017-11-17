@@ -102,7 +102,13 @@ public class MainActivity extends AppCompatActivity
             transaction.replace(R.id.fragment_container, fragment);
             transaction.commit();
 
-        } else if (id == R.id.nav_slideshow) {
+        } else if (id == R.id.nav_favorite_songs) {
+            FavoriteSongFragment fragment = new FavoriteSongFragment();
+
+            FragmentManager fm = getSupportFragmentManager();
+            FragmentTransaction transaction = fm.beginTransaction();
+            transaction.replace(R.id.fragment_container, fragment);
+            transaction.commit();
 
         } else if (id == R.id.nav_manage) {
 
